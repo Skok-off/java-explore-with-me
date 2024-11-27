@@ -1,12 +1,11 @@
 package ru.practicum.service;
 
-import org.springframework.http.ResponseEntity;
 import ru.practicum.dto.HitDto;
+import ru.practicum.dto.HitStatDto;
 
 import java.util.List;
 
 public interface HitService {
-    ResponseEntity<Object> addHit(HitDto hitDto);
-
-    ResponseEntity<Object> getStats(String start, String end, List<String> uris, Boolean unique);
+    void addHit(HitDto hitDto);
+    List<HitStatDto> getStats(String start, String end, List<String> uris, Boolean unique);
 }

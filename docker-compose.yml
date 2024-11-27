@@ -1,28 +1,48 @@
 services:
-  server:
+  stat:
     build: stat/service
-    image: stat-service
-    container_name: stat
+    container_name: stat-container
     ports:
       - "9090:9090"
     depends_on:
-      - db
+      - stat-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/explorewithme
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stat-db:5432/stat-db
       - SPRING_DATASOURCE_USERNAME=username
       - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
 
-  db:
+  stat-db:
     image: postgres:16.1
-    container_name: postgres
+    container_name: stat-db
     ports:
       - "6541:5432"
     environment:
-      - POSTGRES_DB=explorewithme
+      - POSTGRES_DB=stat-db
       - POSTGRES_USER=username
       - POSTGRES_PASSWORD=password
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -q -d explorewithme -U username"]
-      timeout: 5s
-      interval: 5s
-      retries: 10
+
+  main:
+    build: main
+    container_name: main-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - main-db
+    environment:
+      - CLIENT_URL=http://stat:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/main-db
+      - SPRING_DATASOURCE_USERNAME=username
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+
+  main-db:
+    image: postgres:16.1
+    container_name: ewn-db-container
+    ports:
+      - "6540:5432"
+    environment:
+      - POSTGRES_DB=main-db
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
