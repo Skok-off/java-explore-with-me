@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ErrorHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler({DateTimeException.class, BadParamException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse errorBadRequest(final DateTimeException e) {
+    public ErrorResponse handleBadRequest(final RuntimeException e) {
         log.debug("Получен статус 400 Bad request {}", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
