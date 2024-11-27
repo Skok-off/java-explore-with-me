@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
 import ru.practicum.dto.HitStatDto;
+import ru.practicum.exceptions.BadParamException;
 import ru.practicum.exceptions.DateTimeException;
 import ru.practicum.model.Hit;
 import ru.practicum.model.HitMapper;
@@ -30,6 +31,12 @@ public class HitServiceImpl implements HitService {
     @Override
     public List<HitStatDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, Boolean unique) {
         log.info("Start to getStats({}, {}, {})", uris, start, end);
+        if (start == null) {
+            throw new BadParamException("Не указано начало.");
+        }
+        if (end == null) {
+            throw new BadParamException("Не указан конец.");
+        }
         if (end.isBefore(start)) {
             throw new DateTimeException("Начало позже конца. Ошибка");
         }
