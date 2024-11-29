@@ -7,12 +7,13 @@ import ru.practicum.events.model.Event;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class CommonEventService {
 
     public static Long getViews(Event event, HitServiceImpl hitService) {
         String uris = "/events/" + event.getId();
-        LocalDateTime start = event.getPublishedOn() != null ? event.getPublishedOn() : event.getCreatedOn();
+        LocalDateTime start = Objects.nonNull(event.getPublishedOn()) ? event.getPublishedOn() : event.getCreatedOn();
         LocalDateTime end = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String startFormatted = start.format(formatter);

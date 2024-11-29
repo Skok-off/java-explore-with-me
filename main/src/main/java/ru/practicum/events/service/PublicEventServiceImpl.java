@@ -20,6 +20,7 @@ import ru.practicum.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Slf4j
@@ -34,19 +35,22 @@ public class PublicEventServiceImpl implements PublicEventService {
     public List<EventShortDto> getEventsList(String text, Set<Integer> categories, Boolean paid,
                                              LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                              Boolean onlyAvailable, String sort, int from, int size) {
-        if (categories != null) {
+        if (Objects.nonNull(categories)) {
             categories.forEach(id -> checkId(id, categoryRepository));
         }
 
-        rangeStart = (rangeStart != null) ? rangeStart : LocalDateTime.of(1990, 1, 1, 0, 0);
-        rangeEnd = (rangeEnd != null) ? rangeEnd : LocalDateTime.of(2200, 1, 1, 0, 0);
+        rangeStart = (Objects.nonNull(rangeStart)) ? rangeStart : LocalDateTime.of(1990, 1, 1, 0, 0);
+        rangeEnd = (Objects.nonNull(rangeEnd)) ? rangeEnd : LocalDateTime.of(2200, 1, 1, 0, 0);
         Sort sortCriteria = "VIEWS".equalsIgnoreCase(sort)
                 ? Sort.by(Sort.Direction.DESC, "views")
                 : Sort.by(Sort.Direction.ASC, "eventDate");
 
+        if (size < 1) {
+            size = 10;
+        }
         Pageable pageable = PageRequest.of(from / size, size, sortCriteria);
 
-        List<Event> events = (text == null || text.isEmpty())
+        List<Event> events = (Objects.isNull(text) || text.isEmpty())
                 ? eventRepository.findAllWithoutText(categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable)
                 : eventRepository.findAllWithText(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
 

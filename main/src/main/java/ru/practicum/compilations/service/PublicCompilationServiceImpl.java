@@ -12,6 +12,7 @@ import ru.practicum.compilations.repository.CompilationRepository;
 import ru.practicum.exceptions.NotFoundException;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -21,10 +22,12 @@ public class PublicCompilationServiceImpl implements PublicCompilationService {
 
     @Override
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
+        if (size < 1) {
+            size = 10;
+        }
         Pageable pageable = PageRequest.of(from / size, size);
-        if (pinned == null) pinned = false;
+        if (Objects.isNull(pinned)) pinned = false;
         List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, pageable);
-
         List<CompilationDto> result = compilations.stream()
                 .map(CompilationMapper::toCompilationDto)
                 .toList();

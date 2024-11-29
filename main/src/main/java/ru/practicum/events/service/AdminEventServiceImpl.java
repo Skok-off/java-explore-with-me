@@ -21,6 +21,7 @@ import ru.practicum.exceptions.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -36,10 +37,10 @@ public class AdminEventServiceImpl implements AdminEventService {
                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size) {
 
         log.info("Start checks");
-        rangeStart = (rangeStart != null) ? rangeStart : LocalDateTime.of(1990, 1, 1, 0, 0);
-        rangeEnd = (rangeEnd != null) ? rangeEnd : LocalDateTime.of(2200, 1, 1, 0, 0);
+        rangeStart = (Objects.nonNull(rangeStart)) ? rangeStart : LocalDateTime.of(1990, 1, 1, 0, 0);
+        rangeEnd = (Objects.nonNull(rangeEnd)) ? rangeEnd : LocalDateTime.of(2200, 1, 1, 0, 0);
 
-        if (categories != null) {
+        if (Objects.nonNull(categories)) {
             categories.forEach(categoryId -> {
                 if (!categoryRepository.existsById(categoryId)) {
                     throw new BadRequestException(String.format("Category with id %d is not found.", categoryId));
@@ -48,6 +49,9 @@ public class AdminEventServiceImpl implements AdminEventService {
         }
         log.info("Check categories completed");
 
+        if (size < 1) {
+            size = 10;
+        }
         PageRequest pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findAllForAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
 
@@ -74,7 +78,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private void handleStateUpdate(AdminEventStateAction newStateAction, Event oldEvent) {
         log.info("Start update state");
-        if (newStateAction == null) {
+        if (Objects.isNull(newStateAction)) {
             return;
         }
 
@@ -95,7 +99,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
     private void updateEventFields(UpdateEventAdminRequest updateRequest, Event event) {
         log.info("Start update event fields");
-        if (updateRequest.getEventDate() != null) {
+        if (Objects.nonNull(updateRequest.getEventDate())) {
             updateEventDate(updateRequest.getEventDate(), event);
         }
 

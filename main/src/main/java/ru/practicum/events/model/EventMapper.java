@@ -9,6 +9,8 @@ import ru.practicum.events.dto.NewEventDto;
 import ru.practicum.events.locations.model.LocationMapper;
 import ru.practicum.users.model.UserMapper;
 
+import java.util.Objects;
+
 @UtilityClass
 public class EventMapper {
     public EventShortDto toEventShortDto(Event e) {
@@ -53,9 +55,9 @@ public class EventMapper {
                 .description(e.getDescription())
                 .eventDate(e.getEventDate())
                 .location(LocationMapper.toLocation(e.getLocation()))
-                .paid(e.getPaid() != null ? e.getPaid() : false)
-                .participantLimit(e.getParticipantLimit() != null ? e.getParticipantLimit() : 0)
-                .requestModeration(e.getRequestModeration() != null ? e.getRequestModeration() : true)
+                .paid(Objects.nonNull(e.getPaid()) ? e.getPaid() : false)
+                .participantLimit(Objects.nonNull(e.getParticipantLimit()) ? e.getParticipantLimit() : 0)
+                .requestModeration(Objects.nonNull(e.getRequestModeration()) ? e.getRequestModeration() : true)
                 .title(e.getTitle())
                 .build();
     }

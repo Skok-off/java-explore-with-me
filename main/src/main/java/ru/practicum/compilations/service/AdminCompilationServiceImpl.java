@@ -16,6 +16,7 @@ import ru.practicum.exceptions.NotFoundException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -31,7 +32,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
                 .filter(eventIds -> !eventIds.isEmpty())
                 .map(eventRepository::findAllById)
                 .orElse(Collections.emptyList());
-        if (newCompilationDto.getPinned() == null) {
+        if (Objects.isNull(newCompilationDto.getPinned())) {
             newCompilationDto.setPinned(false);
         }
         Compilation compilation = Compilation.builder()

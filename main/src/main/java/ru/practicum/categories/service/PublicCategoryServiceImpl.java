@@ -22,10 +22,11 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
 
     @Override
     public List<CategoryDto> getAllCategories(int from, int size) {
+        if (size < 1) {
+            size = 10;
+        }
         Pageable pageable = PageRequest.of(from / size, size);
-
         List<Category> categories = categoryRepository.findAll(pageable).getContent();
-
         log.info("Found {} categories", categories);
         return categories.stream().map(CategoryMapper::toCategoryDto).toList();
     }
@@ -33,7 +34,6 @@ public class PublicCategoryServiceImpl implements PublicCategoryService {
     @Override
     public CategoryDto getById(int catId) {
         Optional<Category> category = categoryRepository.findById(catId);
-
         if (category.isEmpty()) {
             log.info("Category with id {} not found", catId);
             throw new NotFoundException("Category with id " + catId + " not found");

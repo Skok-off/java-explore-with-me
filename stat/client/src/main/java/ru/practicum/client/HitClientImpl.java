@@ -8,6 +8,7 @@ import ru.practicum.dto.HitDto;
 import ru.practicum.dto.HitStatDto;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class HitClientImpl implements HitClient {
@@ -31,8 +32,8 @@ public class HitClientImpl implements HitClient {
 
     @Override
     public List<HitStatDto> getStats(String start, String end, List<String> uris, Boolean unique) {
-        String urisParam = uris != null && !uris.isEmpty() ? String.join(",", uris) : "";
-        String uniqueParam = (unique != null) ? unique.toString() : "false";
+        String urisParam = Objects.nonNull(uris) && !uris.isEmpty() ? String.join(",", uris) : "";
+        String uniqueParam = (Objects.nonNull(unique)) ? unique.toString() : "false";
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")

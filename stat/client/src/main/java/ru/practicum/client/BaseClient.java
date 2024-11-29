@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class BaseClient {
     protected final RestTemplate rest;
@@ -46,7 +47,7 @@ public class BaseClient {
 
         ResponseEntity<Object> exploreWithMeServerResponse;
         try {
-            if (parameters != null) {
+            if (Objects.nonNull(parameters)) {
                 exploreWithMeServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
                 exploreWithMeServerResponse = rest.exchange(path, method, requestEntity, Object.class);

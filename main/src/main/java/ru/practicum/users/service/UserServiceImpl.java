@@ -14,13 +14,13 @@ import ru.practicum.users.model.UserMapper;
 import ru.practicum.users.repository.UserRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-
 
     @Override
     public UserDto createUser(NewUserRequest newUserRequest) {
@@ -35,8 +35,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsersByIds(List<Integer> ids, int from, int size) {
         List<User> userList;
+        if (size < 1) {
+            size = 10;
+        }
         Pageable pageable = PageRequest.of(from / size, size);
-        if (ids != null && !ids.isEmpty()) {
+        if (Objects.nonNull(ids) && !ids.isEmpty()) {
             userList = userRepository.findAllById(ids);
 
         } else {

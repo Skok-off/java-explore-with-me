@@ -31,10 +31,10 @@ public class HitServiceImpl implements HitService {
     @Override
     public List<HitStatDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, Boolean unique) {
         log.info("Start to getStats({}, {}, {})", uris, start, end);
-        if (start == null) {
+        if (Objects.isNull(start)) {
             throw new BadParamException("Не указано начало.");
         }
-        if (end == null) {
+        if (Objects.isNull(end)) {
             throw new BadParamException("Не указан конец.");
         }
         if (end.isBefore(start)) {
@@ -42,13 +42,13 @@ public class HitServiceImpl implements HitService {
         }
         List<HitStatDto> result;
         if (unique) {
-            if (uris == null || uris.isEmpty()) {
+            if (Objects.isNull(uris) || uris.isEmpty()) {
                 result = hitRepository.findAllUniqueHitsWhenUriIsEmpty(start, end);
             } else {
                 result = hitRepository.findAllUniqueHitsWhenUriIsNotEmpty(start, end, uris);
             }
         } else {
-            if (uris == null || uris.isEmpty()) {
+            if (Objects.isNull(uris) || uris.isEmpty()) {
                 result = hitRepository.findAllHitsWhenUriIsEmpty(start, end);
             } else {
                 result = hitRepository.findAllHitsWhenStarEndUris(start, end, uris);

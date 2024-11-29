@@ -29,6 +29,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Slf4j
@@ -94,7 +95,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         }
 
         LocalDateTime newEventDate = updateEventUserRequest.getEventDate();
-        if (newEventDate != null) {
+        if (Objects.nonNull(newEventDate)) {
             checkEventDate(newEventDate);
             event.setEventDate(newEventDate);
         }
@@ -107,18 +108,18 @@ public class PrivateEventServiceImpl implements PrivateEventService {
         updateFieldIfNotNull(updateEventUserRequest.getRequestModeration(), event::setRequestModeration);
 
         Integer newCategoryDtoId = updateEventUserRequest.getCategory();
-        if (newCategoryDtoId != null) {
+        if (Objects.nonNull(newCategoryDtoId)) {
             Category category = categoryRepository.findById(newCategoryDtoId).orElseThrow(() -> new NotFoundException("Category not found"));
             event.setCategory(category);
         }
 
         LocationDto newLocation = updateEventUserRequest.getLocation();
-        if (newLocation != null) {
+        if (Objects.nonNull(newLocation)) {
             event.setLocation(LocationMapper.toLocation(newLocation));
         }
 
         UserEventStateAction newStateAction = updateEventUserRequest.getStateAction();
-        if (newStateAction != null) {
+        if (Objects.nonNull(newStateAction)) {
             if (newStateAction.equals(UserEventStateAction.SEND_TO_REVIEW)) {
                 event.setState(EventState.PENDING);
             } else if (newStateAction.equals(UserEventStateAction.CANCEL_REVIEW)) {
@@ -207,7 +208,7 @@ public class PrivateEventServiceImpl implements PrivateEventService {
     }
 
     private <T> void updateFieldIfNotNull(T newValue, Consumer<T> setter) {
-        if (newValue != null) {
+        if (Objects.nonNull(newValue)) {
             setter.accept(newValue);
         }
     }
