@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.HitDto;
 import ru.practicum.dto.HitStatDto;
+import ru.practicum.exceptions.BadParamException;
 import ru.practicum.exceptions.DateTimeException;
 import ru.practicum.model.Hit;
 import ru.practicum.model.HitMapper;
@@ -30,18 +31,24 @@ public class HitServiceImpl implements HitService {
     @Override
     public List<HitStatDto> getStats(LocalDateTime start, LocalDateTime end, Set<String> uris, Boolean unique) {
         log.info("Start to getStats({}, {}, {})", uris, start, end);
+        if (Objects.isNull(start)) {
+            throw new BadParamException("Не указано начало.");
+        }
+        if (Objects.isNull(end)) {
+            throw new BadParamException("Не указан конец.");
+        }
         if (end.isBefore(start)) {
             throw new DateTimeException("Начало позже конца. Ошибка");
         }
         List<HitStatDto> result;
         if (unique) {
-            if (uris == null || uris.isEmpty()) {
+            if (Objects.isNull(uris) || uris.isEmpty()) {
                 result = hitRepository.findAllUniqueHitsWhenUriIsEmpty(start, end);
             } else {
                 result = hitRepository.findAllUniqueHitsWhenUriIsNotEmpty(start, end, uris);
             }
         } else {
-            if (uris == null || uris.isEmpty()) {
+            if (Objects.isNull(uris) || uris.isEmpty()) {
                 result = hitRepository.findAllHitsWhenUriIsEmpty(start, end);
             } else {
                 result = hitRepository.findAllHitsWhenStarEndUris(start, end, uris);
