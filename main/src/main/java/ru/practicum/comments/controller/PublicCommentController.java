@@ -8,7 +8,7 @@ import ru.practicum.comments.service.PublicCommentService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/events/")
+@RequestMapping(path = "/events")
 @RequiredArgsConstructor
 public class PublicCommentController {
     private final PublicCommentService publicCommentService;
